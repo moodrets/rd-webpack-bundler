@@ -1,3 +1,9 @@
+body {
+    @apply font-base;
+    min-width: 320px;
+    background: url('../assets/img/test-bg.jpg') center top no-repeat;
+}
+
 .centered {
     width: var(--container-width);
     max-width: 100%;

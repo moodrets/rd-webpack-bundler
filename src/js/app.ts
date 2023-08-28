@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { includeSvgSprite } from '@/js/helpers/includeSvgSprite'
+import { includeSvgSprite } from '@/js/helpers/svgSprite'
 import App from '@/js/App.vue'
 
 const app = createApp(App)
