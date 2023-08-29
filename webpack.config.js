@@ -24,18 +24,17 @@ const initPages = (pages) => {
 
 module.exports = {
     ...webpackDevOptions,
-    entry: './src/js/app.ts',
+    entry: './src/scripts/app.ts',
     output: {
-        filename: 'js/[name].[hash].js',
+        filename: 'js/[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
         ...initPages([
             {template: 'main.twig', filename: 'index.html'},
-            {template: 'test.twig', filename: 'test.html'},
         ]),
         new MiniCssExtractPlugin({
-            filename: "./css/[name].[hash].css"
+            filename: "./css/[name].[contenthash].css"
         }),
         new VueLoaderPlugin(),
         new webpack.DefinePlugin({
@@ -45,27 +44,34 @@ module.exports = {
         new SpriteLoaderPlugin({ 
             plainSprite: true,
             spriteAttrs: {
-                'style': 'position: absolute; left: -9999px; top: -9999px;'
+                style: 'position: absolute; left: -9999px; top: -9999px;',
+                id: `svg_sprite_${Date.now()}`
             }
          })
     ],
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            },
-            {
                 test: /\.vue$/,
                 loader: "vue-loader",
                 exclude: /node_modules/
+            },
+            {
+                test: /\.ts?$/,
+                use: {
+                    loader:'ts-loader',
+                    options: {
+                        appendTsSuffixTo: [/\.vue$/]
+                    }
+                },
+                exclude: /node_modules/,
             },
             {
                 test: /\.s[ac]ss$/i,
                 use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
                 exclude: /node_modules/,
             },
+            
             {
                 test: /\.twig$/,
                 use: ['raw-loader', 'twig-html-loader']
@@ -78,10 +84,20 @@ module.exports = {
                 },
             },
             {
+                test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
+                type: 'asset/resource',
+                exclude: [
+                    path.resolve(__dirname, 'src/assets/icons'),
+                ],
+                generator: {
+                    filename: './img/[name][ext]',
+                },
+            },
+            {
                 test: /\.svg$/,
                 exclude: /node_modules/,
                 include: [
-                    path.resolve(__dirname, 'src/assets/icons'),
+                    path.resolve(__dirname, 'src/assets/icons/'),
                 ],
                 use: [
                     {
@@ -95,25 +111,14 @@ module.exports = {
                     'svgo-loader'
                 ]
             },
-            {
-                test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
-                type: 'asset/resource',
-                exclude: [
-                    path.resolve(__dirname, 'src/assets/icons'),
-                ],
-                generator: {
-                    filename: './img/[name][ext]',
-                },
-            }
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.vue'],
+        extensions: ['.tsx', '.ts', '.js', '.vue', '.scss'],
         alias: {
             '@': path.resolve(__dirname, 'src/'),
         },
     },
-    
     devServer: {
         static: {
             directory: path.resolve(__dirname, 'dist'),

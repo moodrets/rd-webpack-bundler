@@ -1,5 +1,5 @@
 export function includeSvgSprite() {
-    let svgIcons = require.context('../../assets/icons/', true, /\.svg$/)
+    let svgIcons = require.context('@/assets/icons/', true, /\.svg$/)
     svgIcons.keys().forEach(svgIcons);
 }
 

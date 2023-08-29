@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
-import { includeSvgSprite } from '@/js/helpers/svgSprite'
-import App from '@/js/App.vue'
+import { includeSvgSprite } from '@/scripts/helpers/svgSprite'
+import App from '@/scripts/App.vue'
 
 const app = createApp(App)
 app.mount('#app')
